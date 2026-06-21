@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0e1726" />
+    <title>SwimNotes · Event</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("swimnotes.theme");
+          if (!t)
+            t = window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <a class="back-link" href="meet.html">← Back</a>
+        <span class="spacer"></span>
+        <a class="logo" href="index.html"><span class="wave">≈</span> SwimNotes</a>
+      </div>
+
+      <h1 id="page-title">Add Event</h1>
+      <p class="subtle" id="meet-label"></p>
+
+      <p class="hint" style="margin-top: 0">
+        Name this event one of two ways: pick a <strong>stroke</strong> (and
+        distance) below, <em>or</em> type a custom name. Nothing is selected by
+        default &mdash; choose what fits. You can change it anytime by reopening
+        the event from the meet screen.
+      </p>
+
+      <label for="stroke">Stroke</label>
+      <select id="stroke"></select>
+
+      <label for="distance">Distance</label>
+      <select id="distance"></select>
+
+      <label for="custom-name">Or type a custom event name</label>
+      <input
+        id="custom-name"
+        type="text"
+        placeholder="e.g. 200 IM, 4x100 Free Relay"
+      />
+      <p class="hint">A custom name overrides the stroke/distance pickers.</p>
+
+      <label for="notes">What did coach say?</label>
+      <textarea
+        id="notes"
+        placeholder="breakout 2 deep, good turns, finish head down…"
+      ></textarea>
+      <p class="hint" style="margin-bottom: 4px">Examples (tap to add):</p>
+      <div id="suggestions" class="chips"></div>
+      <button class="btn small" id="voice-btn" type="button">
+        🎤 Voice note
+      </button>
+      <span id="voice-status" class="hint"></span>
+    </div>
+
+    <div class="actionbar">
+      <div class="inner btn-grid">
+        <button class="btn ghost" id="cancel-btn">Cancel</button>
+        <button class="btn primary" id="save-btn">Save Event</button>
+      </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/chrome.js"></script>
+    <script src="js/event.js"></script>
+  </body>
+</html>

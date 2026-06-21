@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0e1726" />
+    <title>SwimNotes · AI Tools</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("swimnotes.theme");
+          if (!t)
+            t = window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <a class="back-link" href="summarize.html">← Back</a>
+        <span class="spacer"></span>
+        <a class="logo" href="index.html"><span class="wave">≈</span> SwimNotes</a>
+      </div>
+
+      <h1>Open an AI tool</h1>
+      <p class="subtle">
+        Pick a free AI chatbot. Where the tool supports it, your prompt is filled
+        in automatically; otherwise it's copied to your clipboard so you can paste
+        it with one tap.
+      </p>
+
+      <label for="prompt">Your prompt</label>
+      <textarea id="prompt" placeholder="Your generated prompt will appear here…"></textarea>
+      <button class="btn small" id="copy-prompt" style="margin-top: 8px">
+        📋 Copy prompt
+      </button>
+      <p class="hint" id="no-prompt-hint" style="display: none">
+        No prompt found. Build one on the
+        <a href="summarize.html">Summarize</a> page, or paste/type your own above.
+      </p>
+
+      <h2>AI tools</h2>
+      <div id="tool-list" class="home-actions"></div>
+
+      <p class="hint">
+        Tip: auto paste-in opens the chatbot with the prompt in the message box —
+        just review and send. Copy &amp; paste tools get the prompt onto your
+        clipboard first, then open so you can paste it in.
+      </p>
+    </div>
+
+    <script src="js/util.js"></script>
+    <script src="js/chrome.js"></script>
+    <script src="js/ai-tools.js"></script>
+  </body>
+</html>

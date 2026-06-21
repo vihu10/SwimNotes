@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0e1726" />
+    <title>SwimNotes · History</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("swimnotes.theme");
+          if (!t)
+            t = window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <a class="back-link" href="index.html">← Back</a>
+        <span class="spacer"></span>
+        <a class="logo" href="index.html"><span class="wave">≈</span> SwimNotes</a>
+      </div>
+
+      <h1>Meet History</h1>
+      <p class="subtle">All meets saved on this device.</p>
+
+      <div id="list"></div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/chrome.js"></script>
+    <script src="js/history.js"></script>
+  </body>
+</html>

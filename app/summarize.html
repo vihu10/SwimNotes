@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0e1726" />
+    <title>SwimNotes · Summarize</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("swimnotes.theme");
+          if (!t)
+            t = window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <a class="back-link" href="meet.html">← Back</a>
+        <span class="spacer"></span>
+        <a class="logo" href="index.html"><span class="wave">≈</span> SwimNotes</a>
+      </div>
+
+      <h1>Summarize</h1>
+      <p class="subtle" id="meet-label"></p>
+
+      <p class="subtle">
+        SwimNotes builds the prompt — <strong>you</strong> paste it into any free
+        AI chatbot (ChatGPT, Gemini, Claude…). The app never sends your notes
+        anywhere.
+      </p>
+
+      <div class="tabs" id="tabs">
+        <div class="tab active" data-kind="summary">Meet Summary</div>
+        <div class="tab" data-kind="talking">Talking Points</div>
+        <div class="tab" data-kind="pattern">Pattern Finder</div>
+      </div>
+
+      <div class="codebox" id="prompt-box"></div>
+
+      <div class="btn-grid" style="margin-top: 12px">
+        <button class="btn primary" id="copy-prompt">📋 Copy Prompt</button>
+        <button class="btn" id="open-ai">Open an AI tool ↗</button>
+      </div>
+
+      <ol class="steps">
+        <li>Copy the prompt above.</li>
+        <li>Open ChatGPT / Gemini / Claude and paste it.</li>
+        <li>Copy the AI's answer and paste it back below.</li>
+      </ol>
+
+      <h2>Paste AI summary back</h2>
+      <p class="hint">
+        Saved with this meet so you can export it or build a coach reminder.
+      </p>
+      <textarea id="summary" placeholder="Paste the AI's organized summary here…"></textarea>
+      <button class="btn small primary" id="save-summary" style="margin-top: 8px">
+        Save Summary
+      </button>
+
+      <h2>Export</h2>
+      <div class="btn-grid">
+        <button class="btn" id="exp-copy">📋 Copy</button>
+        <button class="btn" id="exp-email">✉️ Email</button>
+        <button class="btn" id="exp-download">⬇️ Download</button>
+        <button class="btn" id="exp-share">🔗 Share</button>
+      </div>
+      <p class="hint">Exports your notes + saved summary as plain text.</p>
+    </div>
+
+    <div class="actionbar">
+      <div class="inner">
+        <a class="btn primary block" id="remind-btn" href="remind.html">
+          🔔 Remind Me to Ask Coach →
+        </a>
+      </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/chrome.js"></script>
+    <script src="js/prompts.js"></script>
+    <script src="js/summarize.js"></script>
+  </body>
+</html>

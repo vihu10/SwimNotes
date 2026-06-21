@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0e1726" />
+    <meta
+      name="description"
+      content="SwimNotes - log coach feedback at meets, generate AI prompts, set a reminder to ask your coach. Private, on-device, free."
+    />
+    <title>SwimNotes — log coach feedback, get AI summaries</title>
+    <script>
+      /* set theme before paint to avoid a flash of the wrong mode */
+      (function () {
+        try {
+          var t = localStorage.getItem("swimnotes.theme");
+          if (!t)
+            t = window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="landing">
+    <!-- Dynamic "dive" background: deepens as you scroll -->
+    <div id="water-bg" aria-hidden="true">
+      <span class="bubble" style="left: 8%; width: 10px; height: 10px; animation-duration: 14s; animation-delay: -2s"></span>
+      <span class="bubble" style="left: 22%; width: 6px; height: 6px; animation-duration: 11s; animation-delay: -6s"></span>
+      <span class="bubble" style="left: 38%; width: 14px; height: 14px; animation-duration: 18s; animation-delay: -1s"></span>
+      <span class="bubble" style="left: 55%; width: 8px; height: 8px; animation-duration: 13s; animation-delay: -9s"></span>
+      <span class="bubble" style="left: 68%; width: 5px; height: 5px; animation-duration: 10s; animation-delay: -4s"></span>
+      <span class="bubble" style="left: 80%; width: 12px; height: 12px; animation-duration: 16s; animation-delay: -7s"></span>
+      <span class="bubble" style="left: 92%; width: 7px; height: 7px; animation-duration: 12s; animation-delay: -3s"></span>
+    </div>
+    <div id="depth-overlay" aria-hidden="true"></div>
+
+    <div class="app">
+      <div class="topbar">
+        <a class="logo" href="index.html"><span class="wave">≈</span> SwimNotes</a>
+        <span class="spacer"></span>
+      </div>
+
+      <!-- Hero -->
+      <header class="hero">
+        <div class="hero-badge">🏊 For competitive swimmers</div>
+        <h1 class="hero-title">Turn pool-deck feedback into real improvement.</h1>
+        <p class="hero-tagline">
+          Capture your coach's notes at every meet, turn them into AI-ready
+          summaries, and never forget to follow up — all private, on your device.
+        </p>
+        <div class="hero-cta">
+          <a class="btn primary" href="meet.html?new=1">Add a Meet</a>
+          <a class="btn glass" href="history.html">See Existing Meets</a>
+          <a class="btn glass" href="remind.html">Add to Calendar</a>
+        </div>
+        <div class="scroll-cue">scroll to dive in ↓</div>
+      </header>
+
+      <!-- Features -->
+      <section class="section">
+        <h2 class="section-title">Features</h2>
+        <div class="feature-grid">
+          <div class="card feature">
+            <div class="feature-ico">📝</div>
+            <h3>Fast note-taking</h3>
+            <p>
+              Log feedback per event in seconds — even messy shorthand. Voice
+              input and tap-to-add examples help you capture it before you forget.
+            </p>
+          </div>
+          <div class="card feature">
+            <div class="feature-ico">🤖</div>
+            <h3>AI-ready prompts</h3>
+            <p>
+              One tap builds a ready-to-paste prompt and opens ChatGPT, Claude,
+              or Gemini with it filled in. No API keys, no cost.
+            </p>
+          </div>
+          <div class="card feature">
+            <div class="feature-ico">📅</div>
+            <h3>Coach reminders</h3>
+            <p>
+              Generate a calendar reminder to follow up at practice — auto-timed
+              from your uploaded schedule, no calendar account needed.
+            </p>
+          </div>
+          <div class="card feature">
+            <div class="feature-ico">📋</div>
+            <h3>Meet history</h3>
+            <p>
+              Revisit past meets and let AI surface the feedback patterns that
+              keep repeating across the season.
+            </p>
+          </div>
+          <div class="card feature">
+            <div class="feature-ico">🔒</div>
+            <h3>Private by design</h3>
+            <p>
+              Everything stays in your browser. No accounts, no servers, no
+              tracking — your notes never leave your device.
+            </p>
+          </div>
+          <div class="card feature">
+            <div class="feature-ico">🌗</div>
+            <h3>Great on any device</h3>
+            <p>
+              A responsive light/dark design that feels at home on your phone at
+              the meet, or your laptop afterward.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section class="section">
+        <h2 class="section-title">How it works</h2>
+        <ol class="how-steps">
+          <li class="card">
+            <span class="step-num">1</span>
+            <div>
+              <h3>Log feedback at the meet</h3>
+              <p>Add a meet, then jot what your coach says after each event.</p>
+            </div>
+          </li>
+          <li class="card">
+            <span class="step-num">2</span>
+            <div>
+              <h3>Generate a prompt</h3>
+              <p>Tap Summarize to turn your raw notes into an AI-ready prompt.</p>
+            </div>
+          </li>
+          <li class="card">
+            <span class="step-num">3</span>
+            <div>
+              <h3>Get your summary</h3>
+              <p>
+                Open a free AI tool with the prompt prefilled, then paste the
+                organized summary back into SwimNotes.
+              </p>
+            </div>
+          </li>
+          <li class="card">
+            <span class="step-num">4</span>
+            <div>
+              <h3>Follow up with your coach</h3>
+              <p>
+                Add a calendar reminder so you ask the right questions at your
+                next practice.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- Security statement -->
+      <section class="section">
+        <div class="card security">
+          <div class="security-badge">🔒</div>
+          <h2>Your data stays yours</h2>
+          <p>
+            SwimNotes is a static web app with <strong>no backend</strong>. Your
+            meets, notes, and summaries are saved only in this browser's local
+            storage, on this device. They're never uploaded, and there are no
+            accounts, no analytics, and no tracking.
+          </p>
+          <p>
+            The app <strong>never calls an AI itself</strong> — you choose which
+            AI tool to use and exactly what to paste into it. Because nothing is
+            collected by any operator, regulations like COPPA, FERPA, and CCPA
+            aren't triggered.
+          </p>
+          <ul class="security-list">
+            <li>No server — static site only</li>
+            <li>No login or personal data collected</li>
+            <li>No AI API calls or keys baked into the app</li>
+            <li>Calendar reminders are a local file download — no calendar access</li>
+          </ul>
+        </div>
+      </section>
+
+      <p class="footer-note">
+        Built for swimmers. Free, private, and yours. 🏊
+      </p>
+    </div>
+
+    <script src="js/util.js"></script>
+    <script src="js/chrome.js"></script>
+    <script src="js/landing.js"></script>
+  </body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0e1726" />
+    <title>SwimNotes · Reminder</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("swimnotes.theme");
+          if (!t)
+            t = window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <a class="back-link" href="index.html">← Back</a>
+        <span class="spacer"></span>
+        <a class="logo" href="index.html"><span class="wave">≈</span> SwimNotes</a>
+      </div>
+
+      <div class="row" style="justify-content: flex-end; margin-top: 4px">
+        <button class="btn small" id="open-sched">⬆️ Upload schedule</button>
+      </div>
+
+      <h1>Add event to calendar</h1>
+      <p class="subtle">
+        Make a reminder to ask your coach. SwimNotes builds a calendar file your
+        phone adds natively — no calendar account or permission needed.
+      </p>
+
+      <label for="meet-select">Use feedback from</label>
+      <select id="meet-select"></select>
+      <p class="hint" id="meet-hint">
+        Nothing is selected by default. Choose a meet to auto-fill the title and
+        talking points below &mdash; you can still edit everything.
+      </p>
+
+      <label for="title">Reminder title</label>
+      <input id="title" type="text" />
+
+      <!-- Shown only when a practice schedule has been uploaded -->
+      <div id="sched-block" style="display: none">
+        <label for="sched-slot">Practice time (from your schedule)</label>
+        <select id="sched-slot"></select>
+        <p class="hint">
+          Auto-picked your next practice — no need to enter a time. Pick a
+          different slot, or
+          <a href="#" id="manual-toggle">enter a time manually</a>.
+        </p>
+      </div>
+
+      <!-- Shown when there is no schedule (or user opts to enter manually) -->
+      <div id="manual-block">
+        <div class="grid-2">
+          <div>
+            <label for="date">Practice date</label>
+            <input id="date" type="date" />
+          </div>
+          <div>
+            <label for="time">Time</label>
+            <input id="time" type="time" />
+          </div>
+        </div>
+        <p class="hint" id="manual-hint" style="display: none">
+          No schedule uploaded, so pick a date and time.
+          <a href="index.html">Upload a practice schedule</a> to skip this.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label for="duration">Duration (min)</label>
+          <input id="duration" type="number" min="5" step="5" value="15" />
+        </div>
+        <div>
+          <label for="alarm">Alert before (min)</label>
+          <input id="alarm" type="number" min="0" step="5" value="30" />
+        </div>
+      </div>
+
+      <label for="desc">Notes / talking points</label>
+      <textarea id="desc" placeholder="Top themes to ask about…"></textarea>
+      <p class="hint">Pre-filled from the selected meet's notes — edit freely.</p>
+
+      <h2>Preview</h2>
+      <div class="codebox" id="preview"></div>
+    </div>
+
+    <div class="actionbar">
+      <div class="inner">
+        <button class="btn primary block" id="download-ics">
+          📅 Add Reminder to Calendar
+        </button>
+      </div>
+    </div>
+
+    <!-- Practice schedule upload (centered modal) -->
+    <dialog id="sched-dialog" class="sheet sched-dialog">
+      <h2 style="margin-top: 0">Practice schedule</h2>
+      <p class="hint" style="margin-top: 0">
+        Upload your schedule and reminders auto-pick your next practice time
+        &mdash; no need to enter a time.
+      </p>
+
+      <div id="sched-status" class="sched-status"></div>
+
+      <input
+        type="file"
+        id="sched-file"
+        accept=".ics,.csv,.txt,text/calendar,text/plain,text/csv"
+        hidden
+      />
+      <div class="btn-grid">
+        <button class="btn" id="sched-upload">⬆️ Choose file</button>
+        <button class="btn danger" id="sched-clear" style="display: none">
+          Remove
+        </button>
+      </div>
+
+      <details class="sched-help">
+        <summary>Accepted formats</summary>
+        <p class="hint">
+          A calendar export (<code>.ics</code>) works best. Or a plain text /
+          CSV file with one practice per line, for example:
+        </p>
+        <div class="codebox" style="max-height: none; text-align: left">Monday 4:00pm
+Wednesday 17:30
+Fri 4 pm</div>
+      </details>
+
+      <div class="dialog-actions" style="margin-top: 18px">
+        <button class="btn ghost block" id="sched-close">Done</button>
+      </div>
+    </dialog>
+
+    <script src="js/storage.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/chrome.js"></script>
+    <script src="js/schedule.js"></script>
+    <script src="js/ics.js"></script>
+    <script src="js/remind.js"></script>
+  </body>
+</html>

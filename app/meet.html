@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0e1726" />
+    <title>SwimNotes · Meet</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("swimnotes.theme");
+          if (!t)
+            t = window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <a class="back-link" href="index.html">← Home</a>
+        <span class="spacer"></span>
+        <a class="logo" href="index.html"><span class="wave">≈</span> SwimNotes</a>
+      </div>
+
+      <!-- No current meet -->
+      <div id="no-meet" style="display: none">
+        <h1>Log coach feedback</h1>
+        <p class="subtle">
+          Take quick notes per event at your meet. Everything stays on your
+          phone &mdash; no account, no server.
+        </p>
+        <div class="empty">
+          <div class="big">🏊</div>
+          <p>No meet in progress.</p>
+        </div>
+        <button class="btn primary block" id="new-meet-empty">
+          + New Meet
+        </button>
+        <div id="recent-wrap" style="margin-top: 28px"></div>
+      </div>
+
+      <!-- Current meet -->
+      <div id="has-meet" style="display: none">
+        <h1 id="meet-name">Meet</h1>
+        <p class="subtle" id="meet-date"></p>
+
+        <div class="row between" style="margin-bottom: 6px">
+          <h2 style="margin: 0">Events</h2>
+          <button class="btn small ghost" id="new-meet-btn">New Meet</button>
+        </div>
+
+        <div id="events-list"></div>
+
+        <a class="btn block" id="add-event-btn" href="event.html">
+          + Add Event
+        </a>
+      </div>
+    </div>
+
+    <div class="actionbar" id="actionbar" style="display: none">
+      <div class="inner">
+        <a class="btn primary block" id="summarize-btn" href="summarize.html">
+          Summarize &amp; Next Steps →
+        </a>
+      </div>
+    </div>
+
+    <!-- New meet dialog (expands to fill the device on phones) -->
+    <dialog id="meet-dialog" class="sheet">
+      <h2 style="margin-top: 0">New Meet</h2>
+      <label for="dlg-name">Meet name</label>
+      <input id="dlg-name" type="text" placeholder="e.g. CDST Invitational" />
+      <label for="dlg-date">Date</label>
+      <input id="dlg-date" type="date" />
+      <div class="btn-grid dialog-actions" style="margin-top: 18px">
+        <button class="btn ghost" id="dlg-cancel">Cancel</button>
+        <button class="btn primary" id="dlg-create">Create</button>
+      </div>
+    </dialog>
+
+    <script src="js/storage.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/chrome.js"></script>
+    <script src="js/meet.js"></script>
+  </body>
+</html>

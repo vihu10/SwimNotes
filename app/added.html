@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0e1726" />
+    <title>SwimNotes · Add to calendar</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("swimnotes.theme");
+          if (!t)
+            t = window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <a class="back-link" href="remind.html">← Calendar</a>
+        <span class="spacer"></span>
+        <a class="logo" href="index.html"><span class="wave">≈</span> SwimNotes</a>
+      </div>
+
+      <h1>Add it to your calendar</h1>
+      <p class="subtle" id="subtitle">
+        Your calendar file was downloaded. Here's exactly how to add it.
+      </p>
+
+      <!-- Reminder summary -->
+      <div class="card" id="summary">
+        <div class="row" style="gap: 10px; align-items: flex-start">
+          <span style="font-size: 24px">📅</span>
+          <div style="flex: 1; min-width: 0">
+            <div style="font-weight: 700" id="r-title">Your reminder</div>
+            <div class="meta" id="r-when"></div>
+            <div class="meta">
+              Downloaded as <code id="r-file"></code>
+            </div>
+          </div>
+        </div>
+        <button class="btn small" id="download-again" style="margin-top: 12px">
+          ⬇️ Download again
+        </button>
+      </div>
+
+      <!-- Quick version -->
+      <h2>The quick version</h2>
+      <ol class="steps">
+        <li>
+          Find the file you just downloaded — it's usually in your
+          <strong>Downloads</strong> folder, or in your browser's downloads bar
+          (top or bottom of the window).
+        </li>
+        <li>
+          <strong>Open the file.</strong> Your device's calendar app opens and
+          shows the event, already filled in.
+        </li>
+        <li>
+          Confirm by tapping <strong>Add</strong> / <strong>OK</strong> /
+          <strong>Save</strong>. Done — you'll get an alert 30 minutes before.
+        </li>
+      </ol>
+
+      <!-- Per-device -->
+      <h2 style="margin-bottom: 2px">Step-by-step for your device</h2>
+      <p class="subtle">Tap the one that matches your device 👇</p>
+
+      <details class="card guide">
+        <summary>📱 iPhone &amp; iPad</summary>
+        <ol class="steps">
+          <li>
+            Tap the <strong>Downloads</strong> icon next to Safari's address bar,
+            or open the <strong>Files</strong> app → <strong>Downloads</strong>.
+          </li>
+          <li>Tap the <code>.ics</code> file. The <strong>Calendar</strong> app opens with the event.</li>
+          <li>Tap <strong>Add</strong> (top-right). If asked, choose which calendar to use.</li>
+          <li>The 30-minute alert is already set for you.</li>
+        </ol>
+      </details>
+
+      <details class="card guide">
+        <summary>🤖 Android</summary>
+        <ol class="steps">
+          <li>
+            Pull down the notification shade and tap the finished download, or
+            open <strong>Files</strong> / <strong>My Files</strong> →
+            <strong>Downloads</strong>.
+          </li>
+          <li>
+            Tap the <code>.ics</code> file. If asked which app to use, choose
+            <strong>Google Calendar</strong> (or your calendar app).
+          </li>
+          <li>Review the event and tap <strong>Save</strong>.</li>
+          <li>
+            If tapping the file does nothing, use the
+            <strong>Google Calendar on a computer</strong> method below.
+          </li>
+        </ol>
+      </details>
+
+      <details class="card guide">
+        <summary>💻 Mac</summary>
+        <ol class="steps">
+          <li>Click the file in your browser's downloads, or open <strong>Finder</strong> → <strong>Downloads</strong>.</li>
+          <li>Double-click the <code>.ics</code> file. <strong>Calendar</strong> opens and asks where to add it.</li>
+          <li>Pick a calendar and click <strong>OK</strong>.</li>
+        </ol>
+      </details>
+
+      <details class="card guide">
+        <summary>🪟 Windows</summary>
+        <ol class="steps">
+          <li>Open the <code>.ics</code> from your browser's downloads bar, or the <strong>Downloads</strong> folder.</li>
+          <li>Double-click it. It opens in your default calendar (Outlook or Windows <strong>Calendar</strong>).</li>
+          <li>Click <strong>Save &amp; Close</strong> (Outlook) or <strong>Save</strong>.</li>
+          <li>Opened in the wrong app? Right-click the file → <strong>Open with</strong> → choose your calendar app.</li>
+        </ol>
+      </details>
+
+      <details class="card guide">
+        <summary>🌐 Google Calendar (on a computer)</summary>
+        <p class="hint" style="margin-top: 0">
+          Use this if the file won't open into your calendar automatically.
+        </p>
+        <ol class="steps">
+          <li>Go to <strong>calendar.google.com</strong> and sign in.</li>
+          <li>Click the <strong>⚙ gear</strong> (top-right) → <strong>Settings</strong>.</li>
+          <li>In the left menu, click <strong>Import &amp; export</strong>.</li>
+          <li>Under <strong>Import</strong>, click <strong>Select file from your computer</strong> and choose the downloaded <code>.ics</code>.</li>
+          <li>Choose which calendar to add it to, then click <strong>Import</strong>.</li>
+        </ol>
+      </details>
+
+      <details class="card guide">
+        <summary>📨 Outlook</summary>
+        <ol class="steps">
+          <li><strong>On the web:</strong> Add calendar → <strong>Upload from file</strong> → choose the <code>.ics</code> → pick a calendar → <strong>Import</strong>.</li>
+          <li><strong>Desktop app:</strong> double-click the file; Outlook opens it — click <strong>Save &amp; Close</strong>.</li>
+        </ol>
+      </details>
+
+      <!-- What's inside -->
+      <h2>What's in this reminder</h2>
+      <div class="card">
+        <ul class="plain-list">
+          <li>📌 A one-time event titled with your reminder name.</li>
+          <li>⏰ An alert <strong>30 minutes before</strong>, so you get a heads-up.</li>
+          <li>📝 A short description with your talking points (if you picked a meet).</li>
+          <li>🔒 Created entirely on your device — nothing was uploaded.</li>
+        </ul>
+      </div>
+
+      <!-- Troubleshooting -->
+      <h2>Troubleshooting</h2>
+      <details class="card guide">
+        <summary>It's not working — help</summary>
+        <ul class="plain-list">
+          <li>
+            <strong>I can't find the file.</strong> Check your
+            <strong>Downloads</strong> folder, or your browser's downloads bar.
+            You can also tap <strong>Download again</strong> at the top.
+          </li>
+          <li>
+            <strong>Nothing happened when I opened it.</strong> Your device may
+            not have a default calendar app set. Use the
+            <strong>Google Calendar on a computer</strong> import above.
+          </li>
+          <li>
+            <strong>It opened as text/gibberish.</strong> That's the raw file —
+            choose to open it <em>with</em> your calendar app instead of a text
+            viewer.
+          </li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="actionbar">
+      <div class="inner btn-grid">
+        <a class="btn ghost" href="remind.html">＋ Make another</a>
+        <a class="btn primary" href="index.html">Done</a>
+      </div>
+    </div>
+
+    <script src="js/util.js"></script>
+    <script src="js/chrome.js"></script>
+    <script src="js/added.js"></script>
+  </body>
+</html>
