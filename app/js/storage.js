@@ -98,6 +98,38 @@
     if (getCurrentMeetId() === id) clearCurrentMeetId();
   }
 
+  function deleteAllMeets() {
+    writeAll({ meets: [] });
+    clearCurrentMeetId();
+  }
+
+  // What a meet still needs before it counts as complete (i.e. no longer "in
+  // progress"). The meet name is intentionally NOT required. Returns an array
+  // of human-readable missing items; an empty array means the meet is complete.
+  function missingInfo(meet) {
+    var missing = [];
+    if (!meet) return missing;
+    if (!meet.date) missing.push("a meet date");
+    var events = meet.events || [];
+    if (!events.length) {
+      missing.push("at least one event");
+    } else {
+      var noNotes = 0;
+      events.forEach(function (e) {
+        if (!(e.notes || "").trim()) noNotes++;
+      });
+      if (noNotes) {
+        missing.push(
+          "coach feedback for " +
+            noNotes +
+            " event" +
+            (noNotes === 1 ? "" : "s")
+        );
+      }
+    }
+    return missing;
+  }
+
   function saveSummary(meetId, summary) {
     return updateMeet(meetId, { summary: summary });
   }
@@ -195,6 +227,8 @@
     createMeet: createMeet,
     updateMeet: updateMeet,
     deleteMeet: deleteMeet,
+    deleteAllMeets: deleteAllMeets,
+    missingInfo: missingInfo,
     saveSummary: saveSummary,
     addEvent: addEvent,
     getEvent: getEvent,

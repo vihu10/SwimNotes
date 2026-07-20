@@ -118,3 +118,5 @@ app/
   where unsupported. Copy/Email/Download always work.
 - **Calendar** uses a downloaded `.ics` file with a 30-min `VALARM` — opened by
   the phone's native calendar app. No calendar API or OAuth.
+# SwimNotes
+# SwimNotes

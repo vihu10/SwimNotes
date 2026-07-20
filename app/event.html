@@ -49,18 +49,28 @@
       <select id="distance"></select>
 
       <label for="custom-name">Or type a custom event name</label>
-      <input
-        id="custom-name"
-        type="text"
-        placeholder="e.g. 200 IM, 4x100 Free Relay"
-      />
-      <p class="hint">A custom name overrides the stroke/distance pickers.</p>
+      <div class="field-guard" id="custom-name-wrap">
+        <input
+          id="custom-name"
+          type="text"
+          placeholder="e.g. 200 IM, 100 Freestyle"
+        />
+        <span class="field-guard-msg" aria-hidden="true"
+          >Not a possible event combination</span
+        >
+      </div>
+      <p class="hint">Not case sensitive.</p>
 
       <label for="notes">What did coach say?</label>
-      <textarea
-        id="notes"
-        placeholder="breakout 2 deep, good turns, finish head down…"
-      ></textarea>
+      <div class="field-guard" id="notes-wrap">
+        <textarea
+          id="notes"
+          placeholder="breakout 2 deep, good turns, finish head down…"
+        ></textarea>
+        <span class="field-guard-msg" aria-hidden="true"
+          >Please input feedback</span
+        >
+      </div>
       <p class="hint" style="margin-bottom: 4px">Examples (tap to add):</p>
       <div id="suggestions" class="chips"></div>
       <button class="btn small" id="voice-btn" type="button">

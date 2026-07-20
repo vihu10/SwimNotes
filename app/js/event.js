@@ -15,6 +15,14 @@
   ];
   var DISTANCES = ["25", "50", "100", "200", "400", "500", "800", "1500"];
 
+  // Shorthand people type for the four stroke names.
+  var STROKE_ALIASES = {
+    free: "Freestyle",
+    back: "Backstroke",
+    fly: "Butterfly",
+    breast: "Breaststroke"
+  };
+
   // Pool of example coach-feedback notes. A randomized subset is shown each
   // time the page opens, both as the placeholder and as tap-to-add chips.
   var FEEDBACK_EXAMPLES = [
@@ -73,21 +81,55 @@
     return (dist ? dist + " " : "") + stroke;
   }
 
-  // Reverse of dropdownName: set the stroke/distance dropdowns from a saved
-  // event name (e.g. "100 Freestyle") so editing shows the stored selection.
+  // Canonical stroke for a case-insensitive match ("freestyle"/"free" ->
+  // "Freestyle"), or null. "Other" is excluded: it isn't a real event name on
+  // its own.
+  function canonStroke(s) {
+    s = s.trim().toLowerCase();
+    if (!s) return null;
+    for (var i = 0; i < STROKES.length; i++) {
+      if (STROKES[i] === "Other") continue;
+      if (STROKES[i].toLowerCase() === s) return STROKES[i];
+    }
+    return STROKE_ALIASES[s] || null;
+  }
+
+  // Parse a typed name into dropdown values, case-insensitively and in either
+  // order. Each part alone is fine, and distance/stroke can come in any order:
+  // "100", "freestyle", "100 free" and "free 100" all work. Returns
+  // { dist, stroke } (each "" if absent), or null when the text can't be any
+  // possible event — e.g. "asdf", "300" / "300 Freestyle" (300 isn't a listed
+  // distance), "100 xyz", or two of the same kind ("100 200").
+  function parseName(name) {
+    name = (name || "").trim();
+    if (!name) return null;
+    var tokens = name.split(/\s+/);
+    if (tokens.length > 2) return null;
+    var dist = "";
+    var stroke = "";
+    for (var i = 0; i < tokens.length; i++) {
+      var t = tokens[i];
+      if (/^\d+$/.test(t)) {
+        if (DISTANCES.indexOf(t) === -1 || dist) return null; // bad/duplicate distance
+        dist = t;
+      } else {
+        var st = canonStroke(t);
+        if (!st || stroke) return null; // bad/duplicate stroke
+        stroke = st;
+      }
+    }
+    if (!dist && !stroke) return null;
+    return { dist: dist, stroke: stroke };
+  }
+
+  // Reverse of dropdownName: set the stroke/distance dropdowns from a name
+  // (e.g. "100 Freestyle") so editing/typing reflects the selection. Returns
+  // whether the name mapped to a real combination.
   function applyNameToSelects(name) {
-    var m = name.match(/^(\d+)\s+(.+)$/);
-    if (m && STROKES.indexOf(m[2]) !== -1) {
-      $("#distance").value = m[1];
-      if ($("#distance").value !== m[1]) $("#distance").value = ""; // not a listed distance
-      $("#stroke").value = m[2];
-      return true;
-    }
-    if (STROKES.indexOf(name) !== -1) {
-      $("#stroke").value = name;
-      return true;
-    }
-    return false;
+    var parsed = parseName(name);
+    $("#stroke").value = parsed ? parsed.stroke : "";
+    $("#distance").value = parsed ? parsed.dist : "";
+    return !!parsed;
   }
 
   // Build the name implied by the dropdowns, e.g. "100 Freestyle" ("" if none).
@@ -98,15 +140,78 @@
     return (dist ? dist + " " : "") + stroke;
   }
 
-  // Auto-fill the custom-name field from the dropdowns, but never clobber text
-  // the user typed themselves (only overwrite when empty or still our last fill).
+  // Dropdown -> custom name. The dropdowns have priority, so whenever they name
+  // a full event (e.g. "100 Freestyle") that name replaces the custom field,
+  // even if the user had typed something else. Picking a distance without a
+  // stroke (or "Other") yields no name, so we leave whatever's typed alone.
   function syncCustomName() {
     var auto = dropdownName();
-    var field = $("#custom-name");
-    if (auto && (field.value.trim() === "" || field.value === lastAuto)) {
-      field.value = auto;
-    }
+    if (auto) $("#custom-name").value = auto;
     lastAuto = auto;
+  }
+
+  // Custom name -> dropdowns. Scans the typed words in any order and fills each
+  // picker from whichever word is a valid distance / stroke (alias-aware, not
+  // case-sensitive). Unknown or incomplete words are ignored, so typing one part
+  // never clears the other. No error fires here; that only happens on blur.
+  function syncSelectsFromCustom() {
+    var tokens = $("#custom-name").value.trim().split(/\s+/);
+    var dist = "";
+    var stroke = "";
+    tokens.forEach(function (t) {
+      if (DISTANCES.indexOf(t) !== -1) dist = t;
+      else {
+        var st = canonStroke(t);
+        if (st) stroke = st;
+      }
+    });
+    $("#distance").value = dist;
+    $("#stroke").value = stroke;
+    lastAuto = dropdownName();
+  }
+
+  // On blur: a valid name is normalized to canonical casing ("freestyle" ->
+  // "Freestyle"); text that can't be any possible event runs the red trace +
+  // blur + message, then clears the field once the light finishes going around.
+  function validateCustomName() {
+    var wrap = $("#custom-name-wrap");
+    var field = $("#custom-name");
+    var val = field.value.trim();
+    if (!val) return; // empty -> nothing to do
+
+    var parsed = parseName(val);
+    if (parsed) {
+      $("#stroke").value = parsed.stroke;
+      $("#distance").value = parsed.dist;
+      // canonical form, keeping whichever part was given ("100", "Freestyle",
+      // or "100 Freestyle") so a distance-only entry isn't wiped.
+      var canon = [parsed.dist, parsed.stroke].filter(Boolean).join(" ");
+      field.value = canon;
+      lastAuto = canon;
+      return;
+    }
+
+    wrap.classList.remove("invalid-flash");
+    void wrap.offsetWidth; // restart the animation if re-triggered
+    wrap.classList.add("invalid-flash");
+    // guard-trace runs 0.9s x2 = 1.8s; clear once the light has gone around.
+    setTimeout(function () {
+      wrap.classList.remove("invalid-flash");
+      field.value = "";
+      syncSelectsFromCustom(); // reset the (already empty) pickers + lastAuto
+    }, 1800);
+  }
+
+  // Same red trace + blur + message on the notes field to prompt for feedback.
+  // Nothing is cleared here (unlike the name field) — the box is already empty.
+  function flashNotes() {
+    var wrap = $("#notes-wrap");
+    wrap.classList.remove("invalid-flash");
+    void wrap.offsetWidth; // restart the animation if re-triggered
+    wrap.classList.add("invalid-flash");
+    setTimeout(function () {
+      wrap.classList.remove("invalid-flash");
+    }, 1800);
   }
 
   // Randomized coach-note suggestions: a fresh placeholder + chips each open.
@@ -134,6 +239,12 @@
   }
 
   function save() {
+    // Don't let an impossible custom name through — flag it like a blur does.
+    var custom = $("#custom-name").value.trim();
+    if (custom && !parseName(custom)) {
+      validateCustomName();
+      return;
+    }
     var name = composeName();
     if (!name) {
       UI.toast("Pick a stroke (and distance) or type a custom event name");
@@ -141,6 +252,11 @@
       return;
     }
     var notes = $("#notes").value;
+    if (!notes.trim()) {
+      flashNotes();
+      $("#notes").focus();
+      return;
+    }
 
     if (!meetId) {
       // No meet exists — create a quick one so notes aren't lost.
@@ -243,9 +359,18 @@
       }
     }
 
-    // Selecting a stroke/distance auto-fills the custom name (e.g. "100 Freestyle").
+    // Two-way binding between the pickers and the custom-name field. Selecting a
+    // stroke/distance fills the name; typing a name matches it back onto the
+    // pickers. The dropdown wins when both are set (its change fires last).
     $("#stroke").addEventListener("change", syncCustomName);
     $("#distance").addEventListener("change", syncCustomName);
+    $("#custom-name").addEventListener("input", syncSelectsFromCustom);
+    $("#custom-name").addEventListener("blur", validateCustomName);
+
+    // Clear the "please input feedback" flash as soon as they start typing.
+    $("#notes").addEventListener("input", function () {
+      $("#notes-wrap").classList.remove("invalid-flash");
+    });
 
     renderSuggestions();
 

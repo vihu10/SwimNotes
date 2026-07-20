@@ -1,0 +1,130 @@
+
+---
+### 2026-06-16 21:43:05
+
+Look into the requirements folder build the described application. Please confirm where you will build the application
+
+---
+### 2026-06-16 22:18:37
+
+I want the UI to look good on a mobile device, tablet, computer, and anything else. It should be a responsive web app. Additionally, make it so there are a darker collor wave like animation that is not too disturbing in the back, with a light and dark mode toggle switch at the top. Finanally, for the UI, it needs to expand to fit the device it is on if a button is clicked, i.e., 'New Meet'
+
+---
+### 2026-06-16 22:31:35
+
+Build me a landing page. The home page should have a welcome message, along with buttons matching the theme to go to the add meet area, and another one to see existing meets. for any area in the platform where there is a dropdown, show the default of none selected, or just a blank one, whichever seems more user freindly and showing the user how and where to edit said information. Additionally, add another button on the home page for adding an even to the calender, where the user can then select from previous meet feedback in that browser session. Finally, when adding to calender, ask for the time. Add an additional optional area on the home screen to upload a schedule for practice, and if uploaded, you do not need to prompt the user for a time in claender, just add the closest practice time there.
+
+---
+### 2026-06-16 22:52:03
+
+For the type custom name event, fill it out automatically if the user uses the dropdown. So if i select 100 freestyle, put that in the custom name option when adding an event. For the suggesstions given for the coach notes, i want them to be randomized everytime the website opens from a select 10 - 20 default feedback examples. When the button open an ai tool is shown, please open a page in the app where basic ai tools are listed (chatgpt, gemini, claude, etc.), where the user can open each. make it so when I open the ai bot, the propmt is already pasted in if that is possible. If it is, add a subdescription like, but better, (automatic paste in) or (copy and paste propmt) if the propmt cannot automatically be put there.
+
+---
+### 2026-06-16 23:03:16
+
+where is the data being saved
+
+---
+### 2026-06-16 23:05:41
+
+make my home page a good introduction of my app. a big, centered header, with features, how it works, and a security statement below. make the background dynamic so the lower you scroll the deeper you go into the background water.
+
+---
+### 2026-06-16 23:13:44
+
+I want the background color of everypage to be the same tone as the home page, but still with the waves. additionally, make sure the white things displaying info dont contrast with the backgroudn to much. make sure the upload schedule is centered, and move it to the add even to calander page in a small button at the the top that will say upload schedule
+
+---
+### 2026-06-16 23:21:57
+
+make gray text black, as it is hard to see with the background. also make the background a BIT lighter, so there is a difference between light and dark mode
+
+---
+### 2026-06-16 23:28:01
+
+i always want the small bubbles rising. when switching between the home page to another page, make the 'waves' rise so its a smooth transition.
+
+---
+### 2026-06-16 23:31:56
+
+stop
+
+---
+### 2026-06-16 23:31:56
+
+also make the swimnotes logo darker so it can be seen
+
+---
+### 2026-06-16 23:31:56
+
+i mean always want the small bubbles rising on every page on the app
+
+---
+### 2026-06-16 23:33:42
+
+I want the small bubbles rising on every page of the app, but less than the home page if not the home page. also, when switchign between the home page to another page, make the 'waves' rise from the bottom so its a smooth transition. Finally, make the logo of SwimNotes darker so it is seen, as it is a little hidden in the background water.
+
+---
+### 2026-06-16 23:39:00
+
+make the voice note button darker, so it is seen better. also the swimmer emoji is a little hard to see, please fix that. also, when looking at past meets and events, I want it so the dropdown still holds the information. Finally, when i click 'add a meet', it should do to a page where i will add a new meet, nothing with old meets. in 'see existing meets,' make it so i can edit the meet too to add events, by adding, edit meet button to open page with the meet where i can add morre events if needed
+
+---
+### 2026-06-16 23:44:47
+
+when i go to add a meet i cannot see the wave rising or bubbles. please fix for all buttons (add meet, see existing meet, etc.)
+
+---
+### 2026-06-16 23:55:10
+
+for the rising wave, i just want it to be the background. In the background there is a wave, right? i just want that wave to go up from the bottom when accessing a page with a wave. if going back home, it will just disappear down, not a massive wave ontop the the whole page. the content should still be there when i access the page, but the wave comes in
+
+---
+### 2026-06-17 00:00:09
+
+i only want the wave transition to happen if going from home page to anothe page or another page to home, nothing else
+
+---
+### 2026-06-17 00:07:30
+
+if i switch pages i want the wave to be the same. dont make a new wave, so it looks like just the content on the screen is changing, but the background is the same
+
+---
+### 2026-06-17 22:21:19
+
+add a button near the top with the light and dark mode which shows a pop up of a detailed but easy to read description of how the app backend works, alond with an extra button for a flowchart with the same info
+
+---
+### 2026-06-18 23:14:22
+
+When I add an event to calender, I want a new page to open with nicely formatted steps on what to do next. Like, now the file will be downloaded to your computer. Next, open the file and formatt, or whatever i need to do to add it to calender. Make the explanation thourough
+
+---
+### 2026-06-18 23:27:27
+
+for the step - by - step for your device, don't open any as a default. Just write next to it, choose one or something that prompts the user to chose which one mattch them. also, if there is no uploaded schedule, dont pre-fill the date and time. just put non selected
+
+---
+### 2026-06-18 23:33:00
+
+Please also put the practice day time option as none selected if no schedule. also, when i go to open an ai tool, only put the big three of chatgpt, gemini, and claude. remove the rest
+
+---
+### 2026-06-18 23:37:38
+
+i still see all the ai's on the summarize page. also, the none selected is for when a schedule is NOT uploaded. If uploaded, still auto-pick the next practice
+
+---
+### 2026-06-19 00:13:34
+
+for the time for the practice date to add something to calender, i want the time to also be --:-- -- or somethiung to show nothign selected.
+
+---
+### 2026-06-19 00:20:10
+
+when i click open an ai tool, i only want it to show the big three at the bottom, not just mention the big three in the subtext like you had previosly done
+
+---
+### 2026-06-19 14:48:12
+
+no when i go the the chips with the ai i only want the big three

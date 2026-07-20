@@ -6,6 +6,17 @@
 
   var freshMode = false; // arrived via "Add a Meet" — start a brand-new meet
 
+  // Today's date as "YYYY-MM-DD" in the user's *local* time zone. Using
+  // toISOString() here would convert to UTC and can roll the date forward a
+  // day for anyone west of GMT in the evening.
+  function todayLocal() {
+    var d = new Date();
+    var pad = function (n) {
+      return (n < 10 ? "0" : "") + n;
+    };
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  }
+
   function render() {
     var meet = SwimNotes.getCurrentMeet();
     var noMeet = $("#no-meet");
@@ -17,6 +28,10 @@
       hasMeet.style.display = "none";
       actionbar.style.display = "none";
       renderRecent();
+      // Hide the "No meet in progress" placeholder when there are meets listed
+      // below; show it only when there's genuinely nothing.
+      var hasListed = $("#recent-wrap").children.length > 0;
+      $("#no-meet-empty").style.display = hasListed ? "none" : "";
       return;
     }
 
@@ -43,6 +58,30 @@
         card.appendChild(eventRow(meet.id, evt));
       });
       list.appendChild(card);
+    }
+
+    // "In progress" status: list what's still missing before the meet counts
+    // as complete (the meet name is not required for this).
+    var missing = SwimNotes.missingInfo(meet);
+    var statusEl = $("#meet-status");
+    if (missing.length) {
+      statusEl.style.display = "";
+      statusEl.innerHTML = "";
+      statusEl.appendChild(
+        UI.el("div", { class: "meet-status-title" }, ["🚧 Meet in progress"])
+      );
+      statusEl.appendChild(
+        UI.el("div", { class: "meet-status-sub" }, [
+          "Add the following before this meet is complete:"
+        ])
+      );
+      var ul = UI.el("ul", { class: "meet-status-list" });
+      missing.forEach(function (item) {
+        ul.appendChild(UI.el("li", {}, [item]));
+      });
+      statusEl.appendChild(ul);
+    } else {
+      statusEl.style.display = "none";
     }
 
     // Summarize disabled until there's at least one note
@@ -88,34 +127,55 @@
     return UI.el("div", { class: "event-item" }, [info, del]);
   }
 
+  function recentCard(m, inProgress) {
+    var card = UI.el("div", { class: "card tappable" }, [
+      UI.el("div", { class: "row between" }, [
+        UI.el("div", {}, [
+          UI.el("div", { style: "font-weight:600" }, [m.name]),
+          UI.el("div", { class: "meta" }, [
+            UI.formatDate(m.date) +
+              " · " +
+              m.events.length +
+              " event" +
+              (m.events.length === 1 ? "" : "s")
+          ])
+        ]),
+        inProgress
+          ? UI.el("span", { class: "pill warn" }, ["In progress"])
+          : UI.el("span", { class: "pill" }, ["Open"])
+      ])
+    ]);
+    card.addEventListener("click", function () {
+      SwimNotes.setCurrentMeetId(m.id);
+      render();
+    });
+    return card;
+  }
+
   function renderRecent() {
     var wrap = $("#recent-wrap");
     wrap.innerHTML = "";
-    if (freshMode) return; // "Add a Meet" should not surface old meets
     var meets = SwimNotes.getMeets();
     if (!meets.length) return;
+
+    // On "Add a Meet", still surface any unfinished (in-progress) meets so they
+    // can be resumed instead of accidentally starting a duplicate. Completed
+    // meets stay hidden here.
+    if (freshMode) {
+      var inProgress = meets.filter(function (m) {
+        return SwimNotes.missingInfo(m).length > 0;
+      });
+      if (!inProgress.length) return;
+      wrap.appendChild(UI.el("h2", {}, ["Meets in progress"]));
+      inProgress.forEach(function (m) {
+        wrap.appendChild(recentCard(m, true));
+      });
+      return;
+    }
+
     wrap.appendChild(UI.el("h2", {}, ["Recent meets"]));
     meets.slice(0, 3).forEach(function (m) {
-      var card = UI.el("div", { class: "card tappable" }, [
-        UI.el("div", { class: "row between" }, [
-          UI.el("div", {}, [
-            UI.el("div", { style: "font-weight:600" }, [m.name]),
-            UI.el("div", { class: "meta" }, [
-              UI.formatDate(m.date) +
-                " · " +
-                m.events.length +
-                " event" +
-                (m.events.length === 1 ? "" : "s")
-            ])
-          ]),
-          UI.el("span", { class: "pill" }, ["Open"])
-        ])
-      ]);
-      card.addEventListener("click", function () {
-        SwimNotes.setCurrentMeetId(m.id);
-        render();
-      });
-      wrap.appendChild(card);
+      wrap.appendChild(recentCard(m, SwimNotes.missingInfo(m).length > 0));
     });
     var viewAll = UI.el("a", { class: "btn ghost block", href: "history.html" }, [
       "View all history"
@@ -128,7 +188,7 @@
   function openDialog() {
     var dlg = $("#meet-dialog");
     $("#dlg-name").value = "";
-    $("#dlg-date").value = new Date().toISOString().slice(0, 10);
+    $("#dlg-date").value = todayLocal();
     if (dlg.showModal) dlg.showModal();
     else dlg.setAttribute("open", "");
     setTimeout(function () {
@@ -147,7 +207,7 @@
     $("#dlg-cancel").addEventListener("click", closeDialog);
     $("#dlg-create").addEventListener("click", function () {
       var name = $("#dlg-name").value.trim() || "Untitled Meet";
-      var date = $("#dlg-date").value || new Date().toISOString().slice(0, 10);
+      var date = $("#dlg-date").value || todayLocal();
       SwimNotes.createMeet(name, date);
       closeDialog();
       render();
@@ -162,13 +222,34 @@
       freshMode = true;
       SwimNotes.clearCurrentMeetId();
       render();
-      // Hold the dialog briefly so the page-transition wave + bubbles are seen
-      // first (a modal renders above them and would otherwise hide the reveal).
       var reduced =
         window.matchMedia &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduced) openDialog();
-      else setTimeout(openDialog, 850);
+      // Don't pop the "New Meet" dialog if they've already tapped an in-progress
+      // meet to resume it in the meantime.
+      var openIfStillFresh = function () {
+        if (!SwimNotes.getCurrentMeetId()) openDialog();
+      };
+      // When arriving from home, hold the dialog briefly so the page-transition
+      // wave reveal is seen first (chrome.js marks that wave ".rising-in").
+      var fromHomeWave = !!document.querySelector(".wave-bg.rising-in");
+      if (reduced) {
+        openIfStillFresh();
+      } else if (fromHomeWave) {
+        setTimeout(openIfStillFresh, 850);
+      } else {
+        // From anywhere else (e.g. History → "Start a meet"): slide the page in
+        // from the left, then pop the dialog once it has settled.
+        var appEl = document.querySelector(".app");
+        if (appEl) {
+          appEl.classList.add("slide-in-left");
+          appEl.addEventListener("animationend", function handler() {
+            appEl.removeEventListener("animationend", handler);
+            appEl.classList.remove("slide-in-left");
+          });
+        }
+        setTimeout(openIfStillFresh, 430);
+      }
     } else {
       render();
     }

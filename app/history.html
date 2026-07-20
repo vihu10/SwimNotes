@@ -36,7 +36,26 @@
       <p class="subtle">All meets saved on this device.</p>
 
       <div id="list"></div>
+
+      <div id="danger-zone" style="display: none; margin-top: 32px">
+        <button class="btn danger block" id="delete-all-btn">
+          Delete all meets
+        </button>
+      </div>
     </div>
+
+    <!-- Confirm clearing every meet (small centered modal) -->
+    <dialog id="confirm-delete-all" class="confirm-dialog">
+      <h2>Delete all meets?</h2>
+      <p>
+        This will permanently remove every saved meet and its notes from this
+        device. This action cannot be undone.
+      </p>
+      <div class="dialog-actions confirm-actions">
+        <button class="btn ghost" id="confirm-cancel">Cancel</button>
+        <button class="btn danger" id="confirm-delete">Delete all</button>
+      </div>
+    </dialog>
 
     <script src="js/storage.js"></script>
     <script src="js/util.js"></script>

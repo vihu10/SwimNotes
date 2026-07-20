@@ -71,13 +71,22 @@
             <input id="date" type="date" />
           </div>
           <div>
-            <label for="time">Time</label>
-            <input id="time" type="time" />
+            <label id="time-label">Time</label>
+            <button
+              type="button"
+              class="time-field"
+              id="time-field"
+              aria-haspopup="dialog"
+              aria-labelledby="time-label"
+            >
+              <span id="time-display" class="placeholder">--:--</span>
+              <span class="time-field-ico" aria-hidden="true">🕐</span>
+            </button>
           </div>
         </div>
         <p class="hint" id="manual-hint" style="display: none">
           No schedule uploaded, so pick a date and time.
-          <a href="index.html">Upload a practice schedule</a> to skip this.
+          <a href="#" id="goto-sched">Upload a practice schedule</a> to skip this.
         </p>
       </div>
 
@@ -94,6 +103,12 @@
 
       <label for="desc">Notes / talking points</label>
       <textarea id="desc" placeholder="Top themes to ask about…"></textarea>
+      <div class="row" style="gap: 8px; margin-top: 6px">
+        <button class="btn small voice-btn" id="desc-voice-btn" type="button">
+          🎤 Voice note
+        </button>
+        <span id="desc-voice-status" class="hint"></span>
+      </div>
       <p class="hint">Pre-filled from the selected meet's notes — edit freely.</p>
 
       <h2>Preview</h2>
@@ -107,6 +122,39 @@
         </button>
       </div>
     </div>
+
+    <!-- Time picker (analog clock + type + AM/PM chips) -->
+    <dialog id="time-dialog" class="sheet time-dialog">
+      <h2 style="margin-top: 0">Set time</h2>
+
+      <input
+        id="time-text"
+        class="time-text"
+        type="text"
+        inputmode="numeric"
+        autocomplete="off"
+        placeholder="--:--"
+        aria-label="Type a time"
+      />
+
+      <div class="chips ampm-chips" role="group" aria-label="AM or PM">
+        <button type="button" class="chip" data-ap="AM">AM</button>
+        <button type="button" class="chip" data-ap="PM">PM</button>
+      </div>
+
+      <svg
+        id="clock"
+        class="clock"
+        viewBox="0 0 240 240"
+        role="img"
+        aria-label="Clock — drag the hands to set the time"
+      ></svg>
+
+      <div class="dialog-actions time-dialog-actions">
+        <button class="btn ghost" id="time-clear">Clear</button>
+        <button class="btn primary" id="time-confirm">Set time</button>
+      </div>
+    </dialog>
 
     <!-- Practice schedule upload (centered modal) -->
     <dialog id="sched-dialog" class="sheet sched-dialog">

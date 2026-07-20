@@ -31,6 +31,10 @@
   --on-water: #ffffff;
   --on-water-soft: #d8edf8;
   --on-water-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
+
+  /* the light that traces the "Upload schedule" button — bright white on dark */
+  --glow-line: #ffffff;
+  --glow-line-soft: rgba(255, 255, 255, 0.2);
 }
 
 [data-theme="light"] {
@@ -63,6 +67,10 @@
   --on-water: #082c42;
   --on-water-soft: #0c3550;
   --on-water-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+
+  /* a dark tracing light for light mode (bright white would be invisible) */
+  --glow-line: #06202f;
+  --glow-line-soft: rgba(6, 32, 47, 0.2);
 }
 
 * {
@@ -102,6 +110,42 @@ body {
   max-width: 640px;
   margin: 0 auto;
   padding: 0 16px 110px;
+}
+
+/* Page content slides in from the left (used for non-home navigations, e.g.
+ * History → "Start a meet"). */
+.app.slide-in-left {
+  animation: app-slide-in-left 0.42s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes app-slide-in-left {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+/* Outgoing page slides off to the right (pairs with slide-in-left). */
+.app.slide-out-right {
+  animation: app-slide-out-right 0.38s cubic-bezier(0.55, 0, 0.67, 0.2) both;
+}
+@keyframes app-slide-out-right {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app.slide-in-left,
+  .app.slide-out-right {
+    animation: none;
+  }
 }
 
 /* tablet */
@@ -161,12 +205,42 @@ body {
   color: var(--muted);
   text-decoration: none;
   font-size: 15px;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  padding: 7px 14px 7px 11px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.18s ease, background-color 0.18s ease,
+    border-color 0.18s ease, box-shadow 0.18s ease, transform 0.08s ease;
 }
 .back-link:hover {
   color: var(--text);
+  /* frosted glass: a faint top sheen over the translucent panel tint */
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08),
+    var(--surface-2)
+  );
+  border-color: var(--accent);
+  /* outline ring + inner highlight + lift shadow = glassy, tactile */
+  box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14), var(--shadow);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transform: translateY(-1px);
+}
+.back-link:focus-visible {
+  outline: none;
+  color: var(--text);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.22);
+}
+.back-link:active {
+  transform: scale(0.96);
 }
 
 h1 {
@@ -251,6 +325,49 @@ h2 {
   padding: 2px 10px;
   border-radius: 999px;
   font-size: 12px;
+}
+/* "In progress" (incomplete meet) pill — amber to read as a warning. */
+.pill.warn {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.5);
+  color: #f59e0b;
+}
+.history-pills {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+/* "Meet in progress" status callout: what a meet still needs to be complete. */
+.meet-status {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 12px;
+}
+.meet-status.compact {
+  margin-top: 0;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+}
+.meet-status-title {
+  font-weight: 700;
+  color: #f59e0b;
+  font-size: 14px;
+}
+.meet-status-sub {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+.meet-status-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .empty {
@@ -528,6 +645,146 @@ textarea:focus {
   }
 }
 
+/* Draws the eye to the "Upload schedule" button without opening it:
+ * the button turns slightly glossy, and a line of light circles its edge. */
+.highlight-glow {
+  position: relative;
+  isolation: isolate; /* keep the ::before ring above the button surface */
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 12px -2px var(--accent);
+}
+/* Glossy sheen laid over the button face. */
+.highlight-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.12) 30%,
+    transparent 55%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+/* Registered so the conic gradient's angle can be animated. Animating the
+ * angle (instead of rotating the element) keeps the ring locked to the
+ * button's outline, so the light traces the border rather than spinning a
+ * whole shape in front of it. */
+@property --glow-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+/* A single bright arc of light that runs around the button's border. */
+.highlight-glow::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  padding: 2px; /* ring thickness */
+  background: conic-gradient(
+    from var(--glow-angle),
+    transparent 0deg,
+    transparent 300deg,
+    var(--glow-line-soft) 335deg,
+    var(--glow-line) 358deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+  animation: highlight-trace 0.9s linear 3;
+}
+@keyframes highlight-trace {
+  to {
+    --glow-angle: 360deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .highlight-glow::before {
+    animation: none;
+  }
+}
+
+/* --- invalid custom-name feedback ---------------------------------------- */
+/* Wraps the custom-name input so we can trace a red light around it, blur the
+ * field, and float a "not a possible event" message over it. Plain <input>
+ * elements can't host ::before/::after, hence the wrapper. */
+.field-guard {
+  position: relative;
+}
+/* Blur the typed text while the field is flagged as invalid. */
+.field-guard.invalid-flash input,
+.field-guard.invalid-flash textarea {
+  filter: blur(2.5px);
+  transition: filter 0.2s ease;
+}
+/* Centered red message, shown only while flagged. */
+.field-guard-msg {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 12px;
+  color: #ff4d4d;
+  font-weight: 700;
+  font-size: 13px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  z-index: 3;
+}
+.field-guard.invalid-flash .field-guard-msg {
+  display: flex;
+}
+/* Red light that traces the input's border (same angle-animation trick as the
+ * upload-button glow, so it hugs the outline instead of spinning in front). */
+@property --guard-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.field-guard.invalid-flash::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 12px; /* input radius (10px) + inset */
+  padding: 2px;
+  background: conic-gradient(
+    from var(--guard-angle),
+    transparent 0deg,
+    transparent 300deg,
+    rgba(255, 77, 77, 0.2) 330deg,
+    #ff3b3b 352deg,
+    #ffffff 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 4;
+  animation: guard-trace 0.9s linear 2;
+}
+@keyframes guard-trace {
+  to {
+    --guard-angle: 360deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .field-guard.invalid-flash::before {
+    animation: none;
+  }
+}
+
 /* --- landing page action cards -------------------------------------------- */
 
 .home-actions {
@@ -649,6 +906,116 @@ button.action-card {
 }
 .chip:active {
   transform: scale(0.97);
+}
+
+/* --- blank time field that opens the picker ------------------------------- */
+
+.time-field {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 16px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.time-field:hover {
+  border-color: var(--accent);
+}
+.time-field:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.15);
+}
+.time-field .placeholder {
+  color: var(--muted);
+}
+.time-field-ico {
+  font-size: 17px;
+  opacity: 0.8;
+}
+
+/* --- analog clock time picker --------------------------------------------- */
+
+.time-dialog {
+  text-align: center;
+}
+.time-dialog-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* typeable time entry inside the dialog */
+.time-text {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* AM / PM autofill chips */
+.ampm-chips {
+  justify-content: center;
+  margin: 12px 0 4px;
+}
+.ampm-chips .chip {
+  min-width: 72px;
+  font-weight: 700;
+}
+.ampm-chips .chip.active {
+  background: var(--accent);
+  border-color: var(--accent-strong);
+  color: var(--accent-text);
+}
+
+/* the clock face */
+.clock {
+  display: block;
+  width: 240px;
+  max-width: 78vw;
+  height: auto;
+  margin: 8px auto 0;
+  touch-action: none; /* let pointer-drag work without scrolling the page */
+  -webkit-tap-highlight-color: transparent;
+}
+.clock-face {
+  fill: var(--surface-2);
+  stroke: var(--border);
+  stroke-width: 2;
+}
+.clock-num {
+  fill: var(--text);
+  font-size: 17px;
+  font-weight: 600;
+  font-family: inherit;
+  user-select: none;
+}
+.hand {
+  stroke-linecap: round;
+}
+.hand.hour {
+  stroke: var(--text);
+  stroke-width: 6;
+}
+.hand.minute {
+  stroke: var(--accent);
+  stroke-width: 4;
+}
+.clock-center {
+  fill: var(--accent-strong);
 }
 
 .schedule-card .sched-status:empty {
@@ -860,6 +1227,59 @@ dialog.sheet[open] {
     animation: none;
   }
   dialog.sheet[open] {
+    animation: none;
+  }
+}
+
+/* Darker outline + a red-tinted fill on the destructive "Delete all" button. */
+#delete-all-btn {
+  border-color: var(--danger);
+  background: rgba(220, 38, 38, 0.18);
+}
+#delete-all-btn:hover {
+  background: rgba(220, 38, 38, 0.28);
+}
+
+/* --- small centered confirm dialog (stays compact on phones too) ---------- */
+dialog.confirm-dialog {
+  margin: auto;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 18px;
+  padding: 24px;
+  width: min(360px, calc(100% - 48px));
+  box-shadow: var(--shadow);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  text-align: center;
+}
+dialog.confirm-dialog::backdrop {
+  background: rgba(5, 10, 20, 0.55);
+  backdrop-filter: blur(3px);
+}
+dialog.confirm-dialog[open] {
+  animation: sheet-pop 0.28s cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+dialog.confirm-dialog h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+dialog.confirm-dialog p {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+.confirm-actions .btn {
+  flex: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog.confirm-dialog[open] {
     animation: none;
   }
 }
@@ -1156,7 +1576,8 @@ body.landing .wave-bg {
 /* --- visibility tweaks ---------------------------------------------------- */
 
 /* voice-note button: give it a clear, darker presence (was a faint ghost) */
-#voice-btn {
+#voice-btn,
+.voice-btn {
   background: var(--surface-2);
   border-color: var(--accent);
   color: var(--text);
